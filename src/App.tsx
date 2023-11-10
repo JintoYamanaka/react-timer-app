@@ -17,8 +17,9 @@ const App = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    let id: NodeJS.Timeout | null = null;
     if (isActive && totalSeconds > 0) {
-      const id = setInterval(() => {
+      id = setInterval(() => {
         setTotalSeconds((seconds) => seconds - 1);
       }, 1000);
       setIntervalId(id);
@@ -28,7 +29,7 @@ const App = () => {
       setIsActive(false);
     }
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (id) clearInterval(id);
     };
   }, [isActive, totalSeconds]);
 

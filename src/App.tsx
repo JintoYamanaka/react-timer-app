@@ -9,12 +9,18 @@ const appStyle = css`
   margin-top: 50px;
 `;
 
+const errorStyle = css`
+  color: red; /* エラーメッセージを赤色に設定 */
+  margin-top: 20px;
+`;
+
 const App = () => {
   const [minutes, setMinutes] = useState<string>("0");
   const [seconds, setSeconds] = useState<string>("0");
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let id: NodeJS.Timeout | null = null;
@@ -42,8 +48,9 @@ const App = () => {
     if (!isNaN(totalSec) && totalSec >= 0) {
       setTotalSeconds(totalSec);
       setIsActive(true);
+      setErrorMessage(null);
     } else {
-      alert("Invalid time input!");
+      setErrorMessage("Invalid time input!");
     }
   };
 
@@ -66,6 +73,7 @@ const App = () => {
   return (
     <div css={appStyle}>
       <h1>Timer App</h1>
+      {errorMessage && <div css={errorStyle}>{errorMessage}</div>}
       <InputField
         label="Minutes:"
         value={minutes}

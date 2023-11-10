@@ -76,7 +76,11 @@ const App = () => {
         value={seconds}
         onChange={handleSecondsChange}
       />
-      <Button onClick={handleStart} disabled={isActive || totalSeconds !== 0} text="Start" />
+      <Button
+        onClick={handleStart}
+        disabled={isActive || totalSeconds !== 0}
+        text="Start"
+      />
       <Button
         onClick={toggleActive}
         disabled={!isActive && totalSeconds === 0}

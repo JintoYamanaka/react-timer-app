@@ -20,7 +20,7 @@ const buttonStyle = (disabled: boolean) => css`
   }
 `;
 
-const Button: React.FC<ButtonProps> = ({ onClick, disabled, text }) => {
+const Button = ({ onClick, disabled, text }: ButtonProps) => {
   return (
     <button css={buttonStyle(disabled)} onClick={onClick} disabled={disabled}>
       {text}

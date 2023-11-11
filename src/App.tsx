@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import InputField from "./components/InputField";
 import Button from "./components/Button";
+import useSound from "use-sound";
+import beepSound from "./sounds/beep.mp3";
 
 const appStyle = css`
   text-align: center;
@@ -10,7 +12,7 @@ const appStyle = css`
 `;
 
 const errorStyle = css`
-  color: red; /* エラーメッセージを赤色に設定 */
+  color: red;
   margin-top: 20px;
 `;
 
@@ -21,6 +23,8 @@ const App = () => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // useSoundフックでサウンドをセットアップ
+  const [play] = useSound(beepSound, { volume: 0.5 });
 
   useEffect(() => {
     let id: NodeJS.Timeout | null = null;
@@ -31,7 +35,7 @@ const App = () => {
       setIntervalId(id);
     } else if (totalSeconds === 0 && isActive) {
       clearInterval(intervalId as NodeJS.Timeout);
-      alert("Time’s up!"); // ここで効果音を再生する
+      play(); // 効果音を再生する
       setIsActive(false);
     }
     return () => {

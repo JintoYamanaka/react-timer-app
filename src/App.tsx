@@ -3,10 +3,17 @@ import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import InputField from "./components/InputField";
 import Button from "./components/Button";
+import useSound from "use-sound";
+import beepSound from "./sounds/beep.mp3";
 
 const appStyle = css`
   text-align: center;
   margin-top: 50px;
+`;
+
+const errorStyle = css`
+  color: red;
+  margin-top: 20px;
 `;
 
 const App = () => {
@@ -15,20 +22,24 @@ const App = () => {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // useSoundフックでサウンドをセットアップ
+  const [play] = useSound(beepSound, { volume: 0.5 });
 
   useEffect(() => {
+    let id: NodeJS.Timeout | null = null;
     if (isActive && totalSeconds > 0) {
-      const id = setInterval(() => {
+      id = setInterval(() => {
         setTotalSeconds((seconds) => seconds - 1);
       }, 1000);
       setIntervalId(id);
     } else if (totalSeconds === 0 && isActive) {
       clearInterval(intervalId as NodeJS.Timeout);
-      alert("Time’s up!"); // ここで効果音を再生する
+      play(); // 効果音を再生する
       setIsActive(false);
     }
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (id) clearInterval(id);
     };
   }, [isActive, totalSeconds]);
 
@@ -41,8 +52,9 @@ const App = () => {
     if (!isNaN(totalSec) && totalSec >= 0) {
       setTotalSeconds(totalSec);
       setIsActive(true);
+      setErrorMessage(null);
     } else {
-      alert("Invalid time input!");
+      setErrorMessage("Invalid time input!");
     }
   };
 
@@ -65,6 +77,7 @@ const App = () => {
   return (
     <div css={appStyle}>
       <h1>Timer App</h1>
+      {errorMessage && <div css={errorStyle}>{errorMessage}</div>}
       <InputField
         label="Minutes:"
         value={minutes}
@@ -75,7 +88,11 @@ const App = () => {
         value={seconds}
         onChange={handleSecondsChange}
       />
-      <Button onClick={handleStart} disabled={isActive || totalSeconds !== 0} text="Start" />
+      <Button
+        onClick={handleStart}
+        disabled={isActive || totalSeconds !== 0}
+        text="Start"
+      />
       <Button
         onClick={toggleActive}
         disabled={!isActive && totalSeconds === 0}

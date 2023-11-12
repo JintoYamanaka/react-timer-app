@@ -59,11 +59,8 @@ const App = () => {
   };
 
   const handleReset = () => {
-    clearInterval(intervalId as NodeJS.Timeout);
     setIsActive(false);
-    setMinutes("0");
-    setSeconds("0");
-    setTotalSeconds(0);
+    setTotalSeconds(parseInt(minutes) * 60 + parseInt(seconds));
   };
 
   const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +87,7 @@ const App = () => {
       />
       <Button
         onClick={handleStart}
-        disabled={isActive || totalSeconds !== 0}
+        disabled={isActive}
         text="Start"
       />
       <Button
